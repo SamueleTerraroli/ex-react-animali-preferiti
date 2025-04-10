@@ -58,3 +58,13 @@ img {
     padding: 20px;
     border-radius: 5px;
 }
+
+.card {
+    display: flex;
+    border-radius: 5px;
+    padding: 20px;
+
+    img {
+        height: 100%;
+    }
+}
