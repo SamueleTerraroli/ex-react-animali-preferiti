@@ -14,18 +14,43 @@
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <script type="text/babel">
         const { useState } = React;
+
+        function Modal({
+            title,
+            content,
+            show = false,
+            onClose = () => { },
+            onConfirm = () => { }
+        }) {
+            return show && ReactDOM.createPortal(
+                <div className="modal-container">
+                    <div className="modal">
+                        <h2>{title}</h2>
+                        {content}
+                        <div>
+                            <button onClick={onClose}>Annulla</button>
+                            <button onClick={onConfirm}>Conferma</button>
+                        </div>
+                    </div>
+                </div>,
+                document.body
+            )
+        }
         const ListaAnimali = () => {
 
             const animalsChoices = ["Cane", "Gatto", "Pappagallo", "Cavallo", "Panda"];
             const [animals, setAnimals] = React.useState([]);
+            const [showModal, setShowModal] = React.useState(false);
+            const [query, setQuery] = React.useState('');
 
             const addAnimal = () => {
-                const randomIndex = Math.floor(Math.random() * animalsChoices.length);
-                const newAnimal = animalsChoices[randomIndex];
-                setAnimals(prevAnimals => [...prevAnimals, newAnimal]);
+                if (!query) return;
+                setAnimals(prevAnimals => [...animals, query]);
+                setQuery('');
+                setShowModal(false);
             }
             return (<>
-                <button onClick={addAnimal}>Aggiungi animale casuale</button>
+                <button onClick={() => setShowModal(true)}>Aggiungi animale</button>
                 <details>
                     <summary>Animali</summary>
                     <ul>
@@ -34,6 +59,20 @@
                         ))}
                     </ul>
                 </details>
+                <Modal
+                    show={showModal}
+                    onClose={() => setShowModal(false)}
+                    onConfirm={addAnimal}
+                    title="Aggiungi animale"
+                    content={
+                        <input
+                            type="text"
+                            value={query}
+                            onChange={e => setQuery(e.target.value)}
+
+                        />
+                    }
+                />
             </>)
         }
     </script>
